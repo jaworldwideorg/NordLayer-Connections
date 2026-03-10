@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600&display=swap');
+
+:root {
+  color-scheme: light;
+  font-family: 'Work Sans', 'Segoe UI', sans-serif;
+  line-height: 1.4;
+  --bg: #e8f1f4;
+  --panel: #ffffff;
+  --ink: #22404d;
+  --muted: #3f677d;
+  --accent: #00a0af;
+  --accent-soft: #e5f9fb;
+  --aqua: #00c0ca;
+  --yellow: #e3e24f;
+  --green: #8fc440;
+  --blue: #285f74;
+  --ice: #c2edf0;
+  --danger: #b63a43;
+  --border: #b9d4df;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(0, 160, 175, 0.24) 0%, rgba(0, 160, 175, 0) 38%),
+    radial-gradient(circle at 92% 8%, rgba(143, 196, 64, 0.2) 0%, rgba(143, 196, 64, 0) 34%),
+    radial-gradient(circle at 55% 100%, rgba(40, 95, 116, 0.15) 0%, rgba(40, 95, 116, 0) 46%),
+    linear-gradient(180deg, #f9fcfd 0%, var(--bg) 100%);
+  color: var(--ink);
+}
+
+.app-shell {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 1.2rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(112deg, #22404d 0%, #008b9c 52%, #00c0ca 100%);
+  color: #ffffff;
+  border-radius: 24px;
+  padding: 1.5rem 1.5rem 1.35rem;
+  border: 2px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 22px 40px rgba(34, 64, 77, 0.26);
+}
+
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.hero::before {
+  right: -45px;
+  bottom: -65px;
+  width: 230px;
+  height: 230px;
+  background: linear-gradient(50deg, rgba(227, 226, 79, 0.8), rgba(143, 196, 64, 0.6));
+  clip-path: polygon(10% 8%, 100% 44%, 72% 100%, 0 70%);
+  opacity: 0.95;
+}
+
+.hero::after {
+  right: 145px;
+  top: -48px;
+  width: 130px;
+  height: 130px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  transform: rotate(16deg);
+}
+
+.hero h1 {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  max-width: 700px;
+}
+
+.hero p {
+  position: relative;
+  margin: 0;
+  max-width: 700px;
+  font-size: 1rem;
+}
+
+.controls-grid,
+.stats-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: 1fr;
+}
+
+.panel,
+.stat-card {
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 1rem 1rem 0.95rem;
+  box-shadow: 0 8px 22px rgba(40, 95, 116, 0.12);
+}
+
+.panel h2,
+.stat-card h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+
+.stat-card p {
+  margin: 0;
+  font-size: 1.3rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+input[type='file'],
+input[type='number'],
+input[type='search'],
+select {
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 1.5px solid #9bc0cf;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--ink);
+  min-height: 2.45rem;
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+}
+
+input[type='file'] {
+  padding: 0.45rem;
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+button {
+  border: 1.5px solid #0a8f9d;
+  background: linear-gradient(180deg, #eafcff, #d6f4f8);
+  color: #0e4d67;
+  border-radius: 999px;
+  padding: 0.48rem 0.9rem;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.83rem;
+  letter-spacing: 0.01em;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+button:hover {
+  background: linear-gradient(180deg, #d9f8fb, #c6edf4);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 14px rgba(34, 64, 77, 0.15);
+}
+
+.secondary-button {
+  background: #f8fcfd;
+  border-color: #84afbf;
+  color: #285f74;
+}
+
+.scope-row {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 14px;
+  background: linear-gradient(112deg, #f3fbfc, #eaf6f9);
+  border: 1px solid #d4e8ef;
+}
+
+.scope-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hint {
+  color: var(--muted);
+  margin-bottom: 0;
+  font-size: 0.92rem;
+}
+
+.ok {
+  color: #0f8660;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.error {
+  border: 1px solid #f0c7cc;
+  background: #fef0f2;
+  color: var(--danger);
+  border-radius: 8px;
+  padding: 0.7rem;
+}
+
+.results-panel {
+  margin-top: 0.2rem;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.table-controls {
+  margin: 0.8rem 0;
+  display: grid;
+  grid-template-columns: 1.8fr 1fr auto;
+  gap: 0.75rem;
+  align-items: end;
+  padding: 0.75rem;
+  border: 1px solid #d1e5ee;
+  border-radius: 14px;
+  background: #f7fcfe;
+}
+
+.table-controls label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.table-wrap {
+  overflow: auto;
+  border: 1px solid #d0e4ec;
+  border-radius: 14px;
+  background: #fcfeff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  padding: 0.58rem 0.55rem;
+  white-space: nowrap;
+}
+
+th {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #285f74;
+  background: linear-gradient(180deg, #ebf7fa, #e4f1f5);
+}
+
+.warnings {
+  border-color: #9bc8d9;
+  background: linear-gradient(180deg, #f6fdff, #eff9fd);
+}
+
+.warnings h2 {
+  margin-bottom: 0.55rem;
+}
+
+.warnings ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+@media (min-width: 760px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 980px) {
+  .controls-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .controls-grid .panel:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    padding: 0.8rem 0.7rem 1.2rem;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-controls {
+    grid-template-columns: 1fr;
+  }
+}
