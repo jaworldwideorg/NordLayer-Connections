@@ -1,19 +1,25 @@
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { analyzeActivity } from './analyze';
 import { parseConnectionsCsv, parseMembersCsv } from './parsers';
 import type { ConnectionEvent, MemberRecord } from '../types/models';
 
-async function loadFixture(relativePath: string): Promise<string> {
-  const fixturePath = path.resolve(process.cwd(), relativePath);
-  return readFile(fixturePath, 'utf8');
-}
+const CONNECTIONS_CSV = [
+  '"NAME","EMAIL","CONNECTED"',
+  '"Alice Doe","alice@example.org","2026-03-10 08:45:33 UTC"',
+  '"Bob Lee","bob@example.org","2026-02-01 10:00:00 UTC"',
+  '"Alice Doe","alice@example.org","2026-03-09 08:45:33 UTC"',
+].join('\n');
+
+const MEMBERS_CSV = [
+  '"Organization ID","Member name",Email,Role,Teams,Status,"Creation date","Modified date","Exported date"',
+  'jaworldwide,"Alice Doe",alice@example.org,Member,"All Members",active,"2026-01-10 10:07:22","2026-02-18 16:29:19","2026-03-10 09:02:23"',
+  'jaworldwide,"Bob Lee",bob@example.org,Member,"All Members",inactive,"2026-01-10 10:07:22","2026-02-18 16:29:19","2026-03-10 09:02:23"',
+  'jaworldwide,"Carol Smith",carol@example.org,Member,"All Members",active,"2026-01-10 10:07:22","2026-02-18 16:29:19","2026-03-10 09:02:23"',
+].join('\n');
 
 describe('CSV parsing and analysis', () => {
-  test('parses sample connections and computes reference date with UTC logic', async () => {
-    const connectionsCsv = await loadFixture('input/connections.csv');
-    const parsed = parseConnectionsCsv(connectionsCsv);
+  test('parses sample connections and computes reference date with UTC logic', () => {
+    const parsed = parseConnectionsCsv(CONNECTIONS_CSV);
 
     expect(parsed.rows.length).toBeGreaterThan(0);
 
@@ -29,12 +35,9 @@ describe('CSV parsing and analysis', () => {
     expect(result.stats.totalUniqueConnectedUsers).toBeGreaterThan(0);
   });
 
-  test('supports member scope toggle and identifies not-connected members', async () => {
-    const connectionsCsv = await loadFixture('input/connections.csv');
-    const membersCsv = await loadFixture('input/members.csv');
-
-    const parsedConnections = parseConnectionsCsv(connectionsCsv);
-    const parsedMembers = parseMembersCsv(membersCsv);
+  test('supports member scope toggle and identifies not-connected members', () => {
+    const parsedConnections = parseConnectionsCsv(CONNECTIONS_CSV);
+    const parsedMembers = parseMembersCsv(MEMBERS_CSV);
 
     const activeOnly = analyzeActivity({
       connections: parsedConnections.rows,
