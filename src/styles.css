@@ -285,6 +285,7 @@ button:hover {
   border: 1px solid #d8e8ef;
   border-radius: 12px;
   background: #ffffff;
+  max-height: 470px;
 }
 
 table {
@@ -308,6 +309,9 @@ th {
   letter-spacing: 0.03em;
   color: #285f74;
   background: linear-gradient(180deg, #f1f8fb, #eaf3f7);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .warnings {
@@ -345,6 +349,40 @@ th {
 
 .warning-details {
   margin-top: 0.6rem;
+  max-height: 260px;
+}
+
+.app-shell.compact-mode {
+  gap: 0.85rem;
+}
+
+.compact-mode .panel,
+.compact-mode .stat-card {
+  padding: 0.8rem;
+  border-radius: 14px;
+}
+
+.compact-mode .hero {
+  padding: 1.25rem 1.3rem;
+}
+
+.compact-mode .hero h1 {
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+}
+
+.compact-mode .table-controls {
+  padding: 0.58rem;
+  gap: 0.55rem;
+}
+
+.compact-mode th,
+.compact-mode td {
+  padding: 0.44rem 0.46rem;
+  font-size: 0.93rem;
+}
+
+.compact-mode .table-wrap {
+  max-height: 380px;
 }
 
 @media (min-width: 760px) {

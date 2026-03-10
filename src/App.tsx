@@ -308,7 +308,7 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className="app-shell compact-mode">
       <header className="hero">
         <h1>NordLayer Connections Analyzer</h1>
         <p>
