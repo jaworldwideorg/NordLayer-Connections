@@ -221,6 +221,28 @@ button:hover {
   margin-top: 0.2rem;
 }
 
+.tabs-panel {
+  padding: 0.75rem;
+}
+
+.tabs-header {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  border-color: #8ab6c7;
+  background: #f2fbfd;
+  color: #2c6078;
+}
+
+.tab-active {
+  background: linear-gradient(180deg, #00c0ca, #00a0af);
+  border-color: #008796;
+  color: #ffffff;
+}
+
 .section-head {
   display: flex;
   justify-content: space-between;
@@ -293,6 +315,29 @@ th {
   padding-left: 1.1rem;
 }
 
+.warning-item {
+  border: 1px solid #c7dfea;
+  border-radius: 14px;
+  background: #fbfeff;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.warning-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.warning-line p {
+  margin: 0;
+}
+
+.warning-details {
+  margin-top: 0.6rem;
+}
+
 @media (min-width: 760px) {
   .stats-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -321,5 +366,10 @@ th {
 
   .table-controls {
     grid-template-columns: 1fr;
+  }
+
+  .warning-line {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

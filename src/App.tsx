@@ -25,6 +25,7 @@ const DAY_PRESETS = [7, 14, 30, 60] as const;
 type ConnectedSortKey = 'displayName' | 'email' | 'lastConnectedAt';
 type MissingSortKey = 'displayName' | 'email' | 'status' | 'lastConnectedAt';
 type SortDirection = 'asc' | 'desc';
+type ResultTab = 'connected' | 'missing' | 'warnings';
 
 const persistedSettings = loadSettings();
 
@@ -58,6 +59,8 @@ function App() {
   const [missingSearch, setMissingSearch] = useState('');
   const [missingSortKey, setMissingSortKey] = useState<MissingSortKey>('displayName');
   const [missingSortDirection, setMissingSortDirection] = useState<SortDirection>('asc');
+  const [activeTab, setActiveTab] = useState<ResultTab>('connected');
+  const [expandedWarnings, setExpandedWarnings] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const cachedConnections = loadPersistedCsv('connections');
@@ -102,6 +105,49 @@ function App() {
       warnings: baseWarnings,
     });
   }, [baseWarnings, connections, days, memberScope, members]);
+
+  const warningItems = useMemo(() => {
+    if (!analysis) {
+      return [];
+    }
+
+    let unmatchedAttached = false;
+    const items = analysis.warnings.map((warning, index) => {
+      const shouldAttachDetails = !unmatchedAttached && warning.includes('could not be matched')
+        && analysis.membersWithoutMatchDetails.length > 0;
+
+      if (shouldAttachDetails) {
+        unmatchedAttached = true;
+      }
+
+      return {
+        id: `warning-${index}`,
+        message: warning,
+        details: shouldAttachDetails ? analysis.membersWithoutMatchDetails : null,
+      };
+    });
+
+    if (!unmatchedAttached && analysis.membersWithoutMatchDetails.length > 0) {
+      items.unshift({
+        id: 'unmatched-members',
+        message: `${analysis.membersWithoutMatchDetails.length} members from the current scope could not be matched to any user in the uploaded connections file.`,
+        details: analysis.membersWithoutMatchDetails,
+      });
+    }
+
+    return items;
+  }, [analysis]);
+
+  useEffect(() => {
+    if (activeTab === 'missing' && !members) {
+      setActiveTab('connected');
+      return;
+    }
+
+    if (activeTab === 'warnings' && warningItems.length === 0) {
+      setActiveTab(members ? 'missing' : 'connected');
+    }
+  }, [activeTab, members, warningItems.length]);
 
   const visibleConnectedRows = useMemo<ConnectedUserResult[]>(() => {
     if (!analysis) {
@@ -392,7 +438,42 @@ function App() {
             )}
           </section>
 
-          <section className="panel results-panel" aria-label="Connected users">
+          <section className="tabs-panel panel" aria-label="Result tabs">
+            <div className="tabs-header" role="tablist" aria-label="Analysis result sections">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'connected'}
+                className={`tab-button ${activeTab === 'connected' ? 'tab-active' : ''}`}
+                onClick={() => setActiveTab('connected')}
+              >
+                Users Connected ({visibleConnectedRows.length})
+              </button>
+              {members && (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'missing'}
+                  className={`tab-button ${activeTab === 'missing' ? 'tab-active' : ''}`}
+                  onClick={() => setActiveTab('missing')}
+                >
+                  Members Not Connected ({visibleMissingRows.length})
+                </button>
+              )}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'warnings'}
+                className={`tab-button ${activeTab === 'warnings' ? 'tab-active' : ''}`}
+                onClick={() => setActiveTab('warnings')}
+              >
+                Warnings ({warningItems.length})
+              </button>
+            </div>
+          </section>
+
+          {activeTab === 'connected' && (
+            <section className="panel results-panel" aria-label="Connected users">
             <div className="section-head">
               <h2>Users Connected in Last {days} Days</h2>
               <button type="button" onClick={() => exportConnected(visibleConnectedRows)}>
@@ -453,9 +534,10 @@ function App() {
                 </tbody>
               </table>
             </div>
-          </section>
+            </section>
+          )}
 
-          {members && (
+          {members && activeTab === 'missing' && (
             <section className="panel results-panel" aria-label="Members not connected">
               <div className="section-head">
                 <h2>Members Not Connected in Last {days} Days</h2>
@@ -520,15 +602,53 @@ function App() {
             </section>
           )}
 
-          {analysis.warnings.length > 0 && (
+          {activeTab === 'warnings' && (
             <section className="panel warnings" aria-label="Warnings">
-              <h2>Warnings ({analysis.warnings.length})</h2>
-              <ul>
-                {analysis.warnings.slice(0, 20).map((warning, index) => (
-                  <li key={`${warning}-${index}`}>{warning}</li>
-                ))}
-              </ul>
-              {analysis.warnings.length > 20 && <p>Showing first 20 warnings.</p>}
+              <h2>Warnings ({warningItems.length})</h2>
+              {warningItems.length === 0 && <p className="hint">No warnings for the currently loaded files.</p>}
+              {warningItems.map((warning) => (
+                <article key={warning.id} className="warning-item">
+                  <div className="warning-line">
+                    <p>{warning.message}</p>
+                    {warning.details && (
+                      <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => {
+                          setExpandedWarnings((previous) => ({
+                            ...previous,
+                            [warning.id]: !previous[warning.id],
+                          }));
+                        }}
+                      >
+                        {expandedWarnings[warning.id] ? 'Hide Members' : `Show Members (${warning.details.length})`}
+                      </button>
+                    )}
+                  </div>
+                  {warning.details && expandedWarnings[warning.id] && (
+                    <div className="table-wrap warning-details">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {warning.details.map((member) => (
+                            <tr key={member.identityKey}>
+                              <td>{member.displayName}</td>
+                              <td>{member.email ?? '-'}</td>
+                              <td>{member.status ?? '-'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </article>
+              ))}
             </section>
           )}
         </>

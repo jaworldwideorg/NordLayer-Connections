@@ -38,6 +38,7 @@ export interface AnalysisResult {
   cutoffDateUtc: Date;
   connectedWithinWindow: ConnectedUserResult[];
   membersNotConnected: MissingMemberResult[];
+  membersWithoutMatchDetails: MemberRecord[];
   stats: AnalysisStats;
   warnings: string[];
 }

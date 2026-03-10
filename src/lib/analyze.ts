@@ -65,6 +65,7 @@ export function analyzeActivity(input: AnalyzeInput): AnalysisResult {
   let membersNotConnected: MissingMemberResult[] = [];
   let expectedMembers = 0;
   let membersWithoutMatch = 0;
+  const membersWithoutMatchDetails: MemberRecord[] = [];
 
   if (input.members) {
     const expected = input.memberScope === 'active'
@@ -78,6 +79,7 @@ export function analyzeActivity(input: AnalyzeInput): AnalysisResult {
         const latest = latestByIdentity.get(member.identityKey);
         if (!latest) {
           membersWithoutMatch += 1;
+          membersWithoutMatchDetails.push(member);
         }
         return {
           ...member,
@@ -103,6 +105,7 @@ export function analyzeActivity(input: AnalyzeInput): AnalysisResult {
     cutoffDateUtc,
     connectedWithinWindow,
     membersNotConnected,
+    membersWithoutMatchDetails,
     warnings,
     stats: {
       totalConnectionRows: input.connections.length,

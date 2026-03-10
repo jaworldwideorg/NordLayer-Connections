@@ -106,6 +106,8 @@ describe('CSV parsing and analysis', () => {
     });
 
     expect(result.stats.membersWithoutMatch).toBe(1);
+    expect(result.membersWithoutMatchDetails).toHaveLength(1);
+    expect(result.membersWithoutMatchDetails[0]?.displayName).toBe('Bob');
     expect(result.warnings.some((warning) => warning.includes('could not be matched'))).toBe(true);
   });
 });
